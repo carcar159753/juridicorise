@@ -1,4 +1,4 @@
-const API = location.origin;
+const API = window.API_URL || location.origin;
 let token = localStorage.getItem('rise_token');
 let me = null;
 let current = 'dashboard';

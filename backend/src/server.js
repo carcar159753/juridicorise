@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const supabase = require('./supabase');
 const { sign, requireAuth, requireModule, requireAdmin, allowed } = require('./auth');
 const { generatePremiumPDF } = require('./pdf');
+const initDatabase = require('./database/initDatabase');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,12 +22,43 @@ async function log(user, action, table_name, record_id, details={}){
 
 app.post('/api/login', async (req,res)=>{
   const { username, password } = req.body;
-  const { data:user, error } = await supabase.from('users').select('*').eq('username', username).eq('active', true).single();
-  if(error || !user) return res.status(401).json({ error:'Login inválido' });
+
+  console.log('LOGIN TENTANDO:', username);
+
+  const { data:user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('username', username)
+    .eq('active', true)
+    .single();
+
+  console.log('ERRO SUPABASE:', error);
+  console.log('USUARIO ACHADO:', user?.username, user?.role, user?.active);
+  console.log('HASH:', user?.password_hash);
+
+  if(error || !user) {
+    return res.status(401).json({ error:'Usuário não encontrado ou inativo' });
+  }
+
   const ok = await bcrypt.compare(password, user.password_hash);
-  if(!ok) return res.status(401).json({ error:'Login inválido' });
+
+  console.log('SENHA CONFERE:', ok);
+
+  if(!ok) {
+    return res.status(401).json({ error:'Senha incorreta' });
+  }
+
   await log(user,'LOGIN','users',user.id,{username:user.username});
-  res.json({ token: sign(user), user:{ id:user.id, username:user.username, name:user.name, role:user.role } });
+
+  res.json({
+    token: sign(user),
+    user:{
+      id:user.id,
+      username:user.username,
+      name:user.name,
+      role:user.role
+    }
+  });
 });
 
 app.get('/api/me', requireAuth, (req,res)=> res.json({ user:req.user, modules: modules.filter(m=>allowed(req.user.role,m)) }));
@@ -125,4 +157,10 @@ app.get('/api/backup', requireAuth, requireAdmin, async (req,res)=>{
 });
 
 app.get('*',(req,res)=>res.sendFile(path.join(__dirname,'../public/index.html')));
-app.listen(PORT,()=>console.log(`✅ Rise Jurídico online em http://localhost:${PORT}`));
+
+async function startServer(){
+  await initDatabase();
+  app.listen(PORT,()=>console.log(`✅ Rise Jurídico online em http://localhost:${PORT}`));
+}
+
+startServer();

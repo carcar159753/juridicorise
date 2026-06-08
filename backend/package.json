@@ -1,1 +1,28 @@
-{"name":"rise-juridico-backend","version":"2.0.0","main":"src/server.js","scripts":{"start":"node src/server.js","dev":"nodemon src/server.js","seed":"node src/seed.js"},"dependencies":{"@supabase/supabase-js":"latest","bcryptjs":"latest","cors":"latest","dotenv":"latest","express":"latest","jsonwebtoken":"latest","pdfkit":"latest","qrcode":"latest","multer":"latest"},"devDependencies":{"nodemon":"latest"},"engines":{"node":">=18"}}
+{
+  "name": "rise-juridico-backend",
+  "version": "2.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seed.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "latest",
+    "bcryptjs": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "latest",
+    "pdfkit": "latest",
+    "qrcode": "latest",
+    "multer": "latest",
+    "pg": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
