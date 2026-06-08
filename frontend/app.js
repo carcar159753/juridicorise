@@ -1,4 +1,4 @@
-const API='';
+const API = 'https://juridicorise.onrender.com';
 const pretty={processos:'Processos',mandados:'Mandados',porte_armas:'Porte de Armas',troca_nome:'Troca de Nome',registro_familiar:'Registro Familiar',alvaras:'Alvarás de Funcionamento',nascimentos:'Certidão de Nascimento',adocoes:'Certidão de Adoção',patentes:'Patente de Nome Familiar',obitos:'Registro de Óbito',documentos_diversos:'Documentos Diversos',quebra_blocklist:'Quebra de Blocklist',audiencias:'Audiências',profissionais:'Advogados/Juízes',users:'Usuários',history:'Histórico',search:'Busca Geral',backup:'Backup',dashboard:'Dashboard'};
 const allMods=['dashboard','processos','mandados','porte_armas','troca_nome','registro_familiar','alvaras','nascimentos','adocoes','patentes','obitos','documentos_diversos','quebra_blocklist','audiencias','profissionais','search','history','users','backup'];
 const policeMods=['processos','mandados','porte_armas'];

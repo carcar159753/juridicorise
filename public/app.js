@@ -1,4 +1,4 @@
-const API = 'https://juridicorise.onrender.com';
+const API = (window.API_URL || location.origin).replace(/\/$/, '');
 let token = localStorage.getItem('rise_token');
 let me = null;
 let current = 'dashboard';
@@ -8,29 +8,7 @@ const schemas = {
 };
 function headers(){return {'Content-Type':'application/json','Authorization':'Bearer '+token}}
 async function api(path, opts={}){const r=await fetch(API+path,{...opts,headers:{...headers(),...(opts.headers||{})}}); if(!r.ok){let e={};try{e=await r.json()}catch{} throw new Error(e.error||'Erro no servidor')} return r.json()}
-async function login(ev){
-  ev.preventDefault();
-  loginMsg.textContent='Entrando...';
-  try{
-    const r=await fetch(API+'/api/login',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username:username.value.trim(),password:password.value})
-    });
-    const txt=await r.text();
-    let j;
-    try{ j=JSON.parse(txt); }catch{ throw new Error('API retornou HTML ao invés de JSON. Confira a URL do backend.'); }
-    if(!r.ok) throw new Error(j.error||'Login inválido');
-    token=j.token;
-    localStorage.setItem('rise_token',token);
-    localStorage.setItem('rise_user',JSON.stringify(j.user));
-    await boot();
-    loginMsg.textContent='';
-  }catch(e){
-    console.error(e);
-    loginMsg.textContent=e.message;
-  }
-}
+async function login(ev){ev.preventDefault();loginMsg.textContent='Entrando...';try{const r=await fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:username.value,password:password.value})});const j=await r.json();if(!r.ok) throw new Error(j.error);token=j.token;localStorage.setItem('rise_token',token);await boot()}catch(e){loginMsg.textContent=e.message}}
 function logout(){localStorage.removeItem('rise_token');location.reload()}
 async function boot(){if(!token)return;try{const r=await api('/api/me');me=r.user;login.classList.add('hidden');app.classList.remove('hidden');profileName.textContent=me.name;profileRole.textContent=me.role==='adm_geral'?'ADM Geral':me.role;renderMenu(r.modules);openPage('dashboard')}catch(e){localStorage.removeItem('rise_token')}}
 function renderMenu(mods){let all=['dashboard',...mods]; if(['adm_geral','admin'].includes(me.role)) all.push('usuarios','historico','backup'); menu.innerHTML=all.map(m=>`<button id="m_${m}" onclick="openPage('${m}')">${labels[m]}</button>`).join('')}
@@ -50,6 +28,6 @@ async function users(){const rows=await api('/api/users');content.innerHTML=`<di
 async function createUser(ev){ev.preventDefault();await api('/api/users',{method:'POST',body:JSON.stringify(Object.fromEntries(new FormData(ev.target).entries()))});users()}
 async function deleteUser(id){if(confirm('Desativar usuário?')){await api('/api/users/'+id,{method:'DELETE'});users()}}
 async function history(){const rows=await api('/api/history');content.innerHTML=`<div class="card"><table class="table"><thead><tr><th>Data</th><th>Usuário</th><th>Ação</th><th>Área</th></tr></thead><tbody>${rows.map(h=>`<tr><td>${new Date(h.created_at).toLocaleString('pt-BR')}</td><td>${h.users?.name||'-'}</td><td>${h.action}</td><td>${h.table_name}</td></tr>`).join('')}</tbody></table></div>`}
-function backup(){content.innerHTML=`<div class="card"><h3>Backup Supabase</h3><p>Baixe uma cópia JSON dos registros, usuários e histórico.</p><button class="gold" onclick="downloadBackup()">Baixar backup</button></div>`}
-async function downloadBackup(){const r=await fetch(API+'/api/backup',{headers:{Authorization:'Bearer '+token}});const b=await r.blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup-rise-juridico.json';a.click()}
+function backup(){content.innerHTML=`<div class="card"><h3>Backup Supabase</h3><p>Baixe uma cópia JSON dos registros, usuários e histórico.</p><button class="gold" onclick="baixarBackup()">Baixar backup</button></div>`}
+function baixarBackup(){fetch(`${API}/api/backup`,{headers:{Authorization:'Bearer '+token}}).then(r=>r.blob()).then(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup-rise-juridico.json';a.click()})}
 boot();

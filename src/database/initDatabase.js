@@ -1,4 +1,7 @@
+const { Client } = require('pg');
+const bcrypt = require('bcryptjs');
 
+const schemaSql = `
 create extension if not exists pgcrypto;
 
 create table if not exists users (
@@ -65,6 +68,59 @@ alter table records enable row level security;
 alter table history enable row level security;
 alter table signatures enable row level security;
 alter table attachments enable row level security;
+`;
 
+async function initDatabase() {
+  const databaseUrl = process.env.DATABASE_URL;
 
--- Usuários padrão serão conferidos automaticamente pelo backend quando SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY estiverem configurados.
+  if (!databaseUrl) {
+    console.log('ℹ️ DATABASE_URL não configurado. Auto-criação do banco ignorada.');
+    console.log('ℹ️ Para criar tabelas automaticamente no deploy, adicione DATABASE_URL do Supabase no Render.');
+    return;
+  }
+
+  const client = new Client({
+    connectionString: databaseUrl,
+    ssl: databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false }
+  });
+
+  try {
+    console.log('🔎 Verificando/criando tabelas do Supabase...');
+    await client.connect();
+    await client.query(schemaSql);
+
+    const adminHash = await bcrypt.hash('159753', 10);
+    const policeHash = await bcrypt.hash('159753', 10);
+
+    await client.query(
+      `insert into users (username, name, role, password_hash, active)
+       values ($1,$2,$3,$4,true)
+       on conflict (username) do update set
+         name = excluded.name,
+         role = excluded.role,
+         password_hash = excluded.password_hash,
+         active = true`,
+      ['carcar', 'Carcar', 'adm_geral', adminHash]
+    );
+
+    await client.query(
+      `insert into users (username, name, role, password_hash, active)
+       values ($1,$2,$3,$4,true)
+       on conflict (username) do update set
+         name = excluded.name,
+         role = excluded.role,
+         password_hash = excluded.password_hash,
+         active = true`,
+      ['policia', 'Polícia Rise', 'policia', policeHash]
+    );
+
+    console.log('✅ Banco pronto e usuários padrão conferidos.');
+  } catch (error) {
+    console.error('❌ Erro ao inicializar banco:', error.message);
+    console.error('Confira DATABASE_URL do Supabase no Render.');
+  } finally {
+    await client.end().catch(() => {});
+  }
+}
+
+module.exports = initDatabase;

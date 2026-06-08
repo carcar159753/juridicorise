@@ -1,7 +1,25 @@
 {
-  "name":"rise-juridico-documentos",
-  "version":"2.0.0",
-  "private":true,
-  "scripts":{"start":"node backend/src/server.js","dev":"node backend/src/server.js","install:all":"echo Sem dependencias externas. Use npm start."},
-  "description":"Sistema Juridico Rise completo com backend, frontend e banco JSON local"
+  "name": "rise-juridico-render-root",
+  "version": "2.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "dev": "nodemon backend/src/server.js",
+    "install:backend": "cd backend && npm install"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "latest",
+    "bcryptjs": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "latest",
+    "pdfkit": "latest",
+    "qrcode": "latest",
+    "multer": "latest",
+    "pg": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }

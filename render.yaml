@@ -1,18 +1,20 @@
 services:
   - type: web
-    name: rise-juridico
-    env: node
-    rootDir: backend
+    name: juridicorise
+    runtime: node
+    plan: free
     buildCommand: npm install
     startCommand: npm start
     envVars:
-      - key: NODE_VERSION
-        value: 20
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-      - key: JWT_SECRET
-        generateValue: true
-      - key: FRONTEND_URL
+      - key: DATABASE_URL
         sync: false

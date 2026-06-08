@@ -1,0 +1,31 @@
+RISE JURÍDICO - PACOTE FINAL
+
+1) HOSTINGER / PUBLIC_HTML
+- Envie TODO o conteúdo da pasta public_html/ para o public_html do domínio.
+- O app.js já está configurado para usar a API: https://juridicorise.onrender.com
+
+2) RENDER / BACKEND
+- Suba o projeto no GitHub.
+- No Render use:
+  Build Command: npm install
+  Start Command: npm start
+  Root Directory: vazio
+
+3) VARIÁVEIS NO RENDER
+SUPABASE_URL=https://nblpihylwzdhnchrngay.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=sua_chave_sb_secret
+JWT_SECRET=rise_juridico_159753
+FRONTEND_URL=https://juridicorise.grupoteamcloud.com.br
+NODE_ENV=production
+
+4) SUPABASE
+- Se as tabelas não existirem, rode o arquivo supabase/schema.sql no SQL Editor.
+- O backend confere/cria automaticamente os usuários padrão via Supabase API.
+
+5) LOGINS
+ADM Geral: carcar / 159753
+Polícia: policia / 159753
+
+6) TESTE DA API
+https://juridicorise.onrender.com/api/me
+Deve retornar: {"error":"Token ausente"}

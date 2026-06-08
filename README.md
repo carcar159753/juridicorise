@@ -1,89 +1,64 @@
-# Sistema Jurídico Rise — Supabase + Render + GitHub
+# Rise Jurídico - Supabase + Render + GitHub
 
-Projeto pronto para deixar 24h online.
+Sistema jurídico da Rise preparado para hospedagem 24h.
 
 ## Logins padrão
-Depois de rodar o seed:
+
 - ADM Geral: `carcar` / `159753`
 - Polícia: `policia` / `159753`
 
-## Estrutura
-- `backend/` API Node.js + Express + frontend estático
-- `backend/public/` site do sistema
-- `supabase/schema.sql` tabelas do banco
-- `render.yaml` deploy automático no Render
+## Render - modo recomendado
 
-## 1. Criar banco no Supabase
-1. Entre em https://supabase.com/
-2. Crie um projeto
-3. Abra **SQL Editor**
-4. Cole o conteúdo de `supabase/schema.sql`
-5. Clique em **Run**
+Se deixar o Root Directory vazio, use:
 
-## 2. Pegar chaves
-No Supabase:
-- Project Settings → API
-- Copie `Project URL`
-- Copie `service_role key`
+- Build Command: `npm install`
+- Start Command: `npm start`
 
-## 3. Rodar local
-```bash
-cd backend
-npm install
-copy .env.example .env
-npm run seed
-npm start
-```
+Variáveis no Render:
 
-No arquivo `.env`, coloque:
 ```env
-SUPABASE_URL=https://SEU-PROJETO.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=SUA_SERVICE_ROLE_KEY
-JWT_SECRET=qualquer-chave-grande
-FRONTEND_URL=http://localhost:3000
-PORT=3000
+SUPABASE_URL=https://SEU_PROJETO.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=SUA_SECRET_KEY
+JWT_SECRET=rise_juridico_159753
+PORT=10000
+NODE_ENV=production
+DATABASE_URL=SUA_CONNECTION_STRING_DO_SUPABASE
 ```
 
-Abra:
-```text
-http://localhost:3000
+## Banco automático
+
+O backend cria/atualiza automaticamente as tabelas quando iniciar, mas para isso precisa da variável:
+
+```env
+DATABASE_URL=postgresql://...
 ```
 
-## 4. Subir no GitHub
-```bash
-git init
-git add .
-git commit -m "Sistema juridico Rise Supabase Render"
-git branch -M main
-git remote add origin URL_DO_SEU_REPOSITORIO
-git push -u origin main
-```
+Pegue no Supabase em:
 
-## 5. Deploy no Render
-1. Entre em https://dashboard.render.com/
-2. New → Web Service
-3. Conecte o repositório do GitHub
-4. Root Directory: `backend`
-5. Build Command: `npm install`
-6. Start Command: `npm start`
-7. Environment Variables:
-   - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `JWT_SECRET`
-   - `FRONTEND_URL` = URL final do Render
+Project Settings > Database > Connection string > URI
 
-Depois do deploy, abra o Shell do Render e rode:
-```bash
-npm run seed
-```
+Use o modo Pooler/Transaction se aparecer.
+
+Se não configurar `DATABASE_URL`, o sistema ainda sobe, mas as tabelas precisam existir no Supabase. Nesse caso rode manualmente o arquivo:
+
+`supabase/schema.sql`
+
+## Supabase keys
+
+No Render use:
+
+- `SUPABASE_URL`: Project URL sem `/rest/v1`
+- `SUPABASE_SERVICE_ROLE_KEY`: Secret key `sb_secret_...`
+
+Não coloque a secret key no frontend.
 
 ## Permissões
-- `adm_geral`: vê tudo, cria usuários, edita, apaga, histórico e backup.
-- `policia`: vê apenas Processos, Mandados e Porte de Armas.
-- `advogado`: certidões, troca de nome, patentes, alvarás e documentos diversos.
-- `juiz`: acesso amplo para aprovar documentos.
 
-## Documentos/PDF
-Todos os módulos têm botão PDF. O PDF usa os dados reais cadastrados no Supabase e não usa números fake.
+- `adm_geral`: acesso total.
+- `policia`: processos, mandados e porte de armas.
+- `advogado`: documentos jurídicos, troca de nome, patente, certidões e alvarás.
+- `juiz`: aprova e assina documentos.
 
-Campos principais mantidos: ID, nome, telefone e sexo. Não tem CPF/RG.
+## Observação
+
+O sistema não usa CPF/RG. Os campos principais são ID, nome, telefone e sexo.
