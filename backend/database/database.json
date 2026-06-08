@@ -1,0 +1,62 @@
+{
+  "users": [
+    {
+      "id": "ad272791755751dc",
+      "name": "Carcar",
+      "username": "carcar",
+      "password": "159753",
+      "role": "adm_geral"
+    },
+    {
+      "id": "c28901b46deb84a5",
+      "name": "Polícia",
+      "username": "policia",
+      "password": "159753",
+      "role": "policia"
+    }
+  ],
+  "sessions": {
+    "8839d96fdaa4ecb8": "ad272791755751dc"
+  },
+  "history": [
+    {
+      "id": "3bb593290da2a856",
+      "date": "2026-06-08T13:56:32.071Z",
+      "user": "Carcar",
+      "role": "adm_geral",
+      "action": "cadastrou",
+      "module": "registro_familiar",
+      "details": "teste"
+    }
+  ],
+  "processos": [],
+  "mandados": [],
+  "porte_armas": [],
+  "troca_nome": [],
+  "registro_familiar": [
+    {
+      "id": "e7624b206d418f46",
+      "status": "Aprovado",
+      "createdAt": "2026-06-08T13:56:32.070Z",
+      "updatedAt": "2026-06-08T13:56:32.070Z",
+      "createdBy": "Carcar",
+      "familia": "teste",
+      "nome": "teste",
+      "id_cidadao": "1",
+      "telefone": "teste",
+      "sexo": "Masculino",
+      "responsavel": "teste",
+      "advogado": "teste",
+      "autoridade": "teste"
+    }
+  ],
+  "alvaras": [],
+  "nascimentos": [],
+  "adocoes": [],
+  "patentes": [],
+  "obitos": [],
+  "documentos_diversos": [],
+  "quebra_blocklist": [],
+  "audiencias": [],
+  "profissionais": []
+}

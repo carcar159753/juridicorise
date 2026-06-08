@@ -1,0 +1,7 @@
+{
+  "name":"rise-juridico-documentos",
+  "version":"2.0.0",
+  "private":true,
+  "scripts":{"start":"node backend/src/server.js","dev":"node backend/src/server.js","install:all":"echo Sem dependencias externas. Use npm start."},
+  "description":"Sistema Juridico Rise completo com backend, frontend e banco JSON local"
+}
